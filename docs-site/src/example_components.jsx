@@ -60,6 +60,7 @@ import TimeInput from "./examples/timeInput";
 import StrictParsing from "./examples/strict_parsing";
 import MonthPicker from "./examples/month_picker";
 import RangeMonthPicker from "./examples/range_month_picker";
+import OnCalendarChangeStateCallbacks from "./examples/on_calendar_change_state_callbacks";
 import "react-datepicker/dist/react-datepicker.css";
 import "./style.scss";
 
@@ -300,6 +301,10 @@ export default class exampleComponents extends React.Component {
     {
       title: "Range Month Picker",
       component: <RangeMonthPicker />
+    },
+    {
+      title: "Calendar state change handlers",
+      component: <OnCalendarChangeStateCallbacks />
     }
   ];
 
