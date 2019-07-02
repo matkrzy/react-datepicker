@@ -61,6 +61,8 @@ import StrictParsing from "./examples/strict_parsing";
 import MonthPicker from "./examples/month_picker";
 import RangeMonthPicker from "./examples/range_month_picker";
 import OnCalendarChangeStateCallbacks from "./examples/on_calendar_change_state_callbacks";
+import OnInputErrorCallback from "./examples/on_input_error_calback";
+import OnInputErrorCallbackCustomMessage from "./examples/on_input_error_calback_custom_message";
 import "react-datepicker/dist/react-datepicker.css";
 import "./style.scss";
 
@@ -305,6 +307,14 @@ export default class exampleComponents extends React.Component {
     {
       title: "Calendar state change handlers",
       component: <OnCalendarChangeStateCallbacks />
+    },
+    {
+      title: "Input error callback",
+      component: <OnInputErrorCallback />
+    },
+    {
+      title: "Input error callback custom messages",
+      component: <OnInputErrorCallbackCustomMessage />
     }
   ];
 
