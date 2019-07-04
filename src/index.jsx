@@ -225,6 +225,7 @@ export default class DatePicker extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.calcInitialState();
+    this.preventFocus = false;
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -269,10 +270,6 @@ export default class DatePicker extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    this.clearPreventFocusTimeout();
-  }
-
   getPreSelection = () =>
     this.props.openToDate
       ? this.props.openToDate
@@ -294,7 +291,6 @@ export default class DatePicker extends React.Component {
         : defaultPreSelection;
     return {
       open: this.props.startOpen || false,
-      preventFocus: false,
       preSelection: this.props.selected
         ? this.props.selected
         : boundedPreSelection,
@@ -303,12 +299,6 @@ export default class DatePicker extends React.Component {
       highlightDates: getHightLightDaysMap(this.props.highlightDates),
       focused: false
     };
-  };
-
-  clearPreventFocusTimeout = () => {
-    if (this.preventFocusTimeout) {
-      clearTimeout(this.preventFocusTimeout);
-    }
   };
 
   setFocus = () => {
@@ -343,7 +333,7 @@ export default class DatePicker extends React.Component {
       : this.props.open;
 
   handleFocus = event => {
-    if (!this.state.preventFocus) {
+    if (!this.preventFocus) {
       this.props.onFocus(event);
       if (!this.props.preventOpenOnFocus && !this.props.readOnly) {
         this.setOpen(true);
@@ -376,7 +366,9 @@ export default class DatePicker extends React.Component {
     } else {
       this.props.onBlur(event);
     }
+
     this.setState({ focused: false });
+    this.preventFocus = false;
   };
 
   handleCalendarClickOutside = event => {
@@ -418,13 +410,8 @@ export default class DatePicker extends React.Component {
   handleSelect = (date, event, monthSelectedIn) => {
     // Preventing onFocus event to fix issue
     // https://github.com/Hacker0x01/react-datepicker/issues/628
-    this.setState({ preventFocus: true }, () => {
-      this.preventFocusTimeout = setTimeout(
-        () => this.setState({ preventFocus: false }),
-        50
-      );
-      return this.preventFocusTimeout;
-    });
+    this.preventFocus = true;
+
     this.setSelected(date, event, undefined, monthSelectedIn);
     if (!this.props.shouldCloseOnSelect || this.props.showTimeSelect) {
       this.setPreSelection(date);
