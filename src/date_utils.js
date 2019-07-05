@@ -163,7 +163,7 @@ export function getWeek(date) {
 }
 
 export function getDayOfWeekCode(day, locale) {
-  return formatDate(day, "ddd", (locale: locale));
+  return formatDate(day, "iii", locale).toLowerCase();
 }
 
 // *** Start of ***
