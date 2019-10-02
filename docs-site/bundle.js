@@ -40868,7 +40868,7 @@
       "use strict";
 
       exports.__esModule = true;
-      exports.getDefaultLocale = exports.setDefaultLocale = exports.registerLocale = exports.CalendarContainer = undefined;
+      exports.INVALID_DATE = exports.getDefaultLocale = exports.setDefaultLocale = exports.registerLocale = exports.CalendarContainer = undefined;
 
       var _extends =
         Object.assign ||
@@ -41003,8 +41003,11 @@
       //errors
       var defaultErrors = {
         dateInvalid: { code: 1, msg: "Date input not valid" },
-        dateOutOfBounds: { code: 2, msg: "Date is out of bounds" }
+        dateOutOfBounds: { code: 2, msg: "Date is out of bounds" },
+        dateDisabled: { code: 3, msg: "Date is disabled" }
       };
+
+      var INVALID_DATE = (exports.INVALID_DATE = "invalid-date");
 
       /**
        * General datepicker component.
@@ -41226,7 +41229,13 @@
             );
             if (date || !event.target.value) {
               _this.setSelected(date, event, true);
+              return;
             }
+
+            _this.props.onInputError(
+              _this.getError("dateInvalid"),
+              event.target.value
+            );
           };
 
           _this.handleSelect = function(date, event, monthSelectedIn) {
@@ -41253,15 +41262,25 @@
           ) {
             var changedDate = date;
 
-            if (
-              changedDate !== null &&
-              (0, _date_utils.isDayDisabled)(changedDate, _this.props)
-            ) {
-              if ((0, _date_utils.isOutOfBounds)(changedDate, _this.props)) {
-                _this.props.onInputError(_this.getError("dateOutOfBounds"));
+            if (changedDate !== null) {
+              if (
+                (0, _date_utils.isDayDisabled)(changedDate, _this.props) &&
+                !(0, _date_utils.isOutOfBounds)(changedDate, _this.props)
+              ) {
+                _this.props.onInputError(
+                  _this.getError("dateDisabled"),
+                  changedDate
+                );
+                return;
               }
 
-              return;
+              if ((0, _date_utils.isOutOfBounds)(changedDate, _this.props)) {
+                _this.props.onInputError(
+                  _this.getError("dateOutOfBounds"),
+                  changedDate
+                );
+                return;
+              }
             }
 
             if (
@@ -41394,7 +41413,10 @@
 
               _this.setOpen(false);
               if (!_this.inputOk()) {
-                _this.props.onInputError(_this.getError("dateInvalid"));
+                _this.props.onInputError(
+                  _this.getError("dateInvalid"),
+                  undefined
+                );
               }
             } else if (eventKey === "Tab") {
               _this.setOpen(false);
@@ -41427,9 +41449,6 @@
                   break;
               }
               if (!newSelection) {
-                if (_this.props.onInputError) {
-                  _this.props.onInputError(_this.getError("dateInvalid"));
-                }
                 return; // Let the input component handle this keydown
               }
               event.preventDefault();
